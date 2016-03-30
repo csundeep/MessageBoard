@@ -5,12 +5,14 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
     <script>
         $(document).ready(function () {
-            $("#comment").click(function () {
+            @if($userName=="")
+            $("#newComment").val('please login to comment');
+            $("#newComment").prop('disabled', true);
+            @endif
+        $("#comment").click(function () {
                 var comment = $("#newComment").val();
-                var userName = $("#userName").val();
-                var postId = $("#postId").val();
                 $.ajax({
-                    url: "http://localhost/MessageBoard/public/postComment/" + comment + "/" + userName + "/" + postId,
+                    url: "http://localhost/MessageBoard/public/postComment/" + comment,
                     success: function (result) {
                         $("table").empty();
                         $('#newComment').val('');
@@ -50,10 +52,8 @@
         @endforeach
     </div>
 </table>
+
 <textarea rows="4" cols="50" name="newComment" id="newComment"></textarea>
 <input type="button" value="comment" id="comment">
-<input type="hidden" value="{{$userName}}" id="userName">
-<input type="hidden" value="{{$post->id}}" id="postId">
-
 </body>
 </html>

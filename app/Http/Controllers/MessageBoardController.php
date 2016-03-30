@@ -7,7 +7,7 @@ use App\Post;
 
 use App\Http\Requests;
 use App\User;
-use Illuminate\Support\Facades\Input;
+use Illuminate\Http\Request;
 
 class MessageBoardController extends Controller
 {
@@ -19,12 +19,12 @@ class MessageBoardController extends Controller
         return view("messageboard", compact('userName', 'posts'));
     }
 
-    public function postQuery()
+    public function postQuery(Request $request)
     {
-        $title = Input::get('title');
-        $description = Input::get('description');
-        $userName = Input::get('userName');
-        $user = User::where('email', $userName)->first();
+        $userName = $request->session()->get('userName');
+        $title = $request->title;
+        $description = $request->description;
+        $user = User::where('email',$userName)->first();
         $newPost = new post();
         $newPost->post_title = $title;
         $newPost->description = $description;
@@ -35,8 +35,9 @@ class MessageBoardController extends Controller
         return view("messageboard", compact('userName', 'posts'));
     }
 
-    public function showPost($id, $userName = "")
+    public function showPost($id, Request $request)
     {
+        $userName = $request->session()->get('userName');
         $post = Post::find($id);
         $comments = Post::find($id)->comments;
 
@@ -44,11 +45,14 @@ class MessageBoardController extends Controller
 
             //  echo User::find($comment->user_id)->email;
         }
+        $request->session()->set('postId',$id);
         return view("post", compact('post', 'comments', 'userName'));
     }
 
-    public function postComment($comment, $userName, $postId)
+    public function postComment($comment, Request $request)
     {
+        $postId = $request->session()->get('postId');
+        $userName = $request->session()->get('userName');
         $responseString = "<table>";
         $newComment = new Comments();
         $newComment->comment = $comment;
@@ -56,8 +60,7 @@ class MessageBoardController extends Controller
         $newComment->user_id = User::where('email', $userName)->first()->id;
         $newComment->save();
 
-        $comments = new Comments();
-        $comments = $comments->get();
+        $comments = Post::find($postId)->comments;
         foreach ($comments as $comment) {
             $responseString = $responseString . "<tr>
                 <td><textarea>" . $comment->comment . "</textarea> Commented by " . User::find($comment->user_id)->email . "

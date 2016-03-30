@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Comments;
+
 use App\Http\Requests\LoginRequest;
 use App\Post;
 use App\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Redirect;
 
 class LoginController extends Controller
@@ -18,8 +17,9 @@ class LoginController extends Controller
         return view("login", ['message' => $message]);
     }
 
-    public function doLogout()
+    public function doLogout(Request $request)
     {
+        $request->session()->flush();
         return Redirect::to('login'); // redirect the user to the login screen
     }
 
@@ -32,24 +32,28 @@ class LoginController extends Controller
         $post = new Post();
         $posts = $post->get();
         foreach ($users as $u) {
-            if ($userName == $u->email && $password == $u->password)
+            if ($userName == $u->email && $password == $u->password) {
+                $request->session()->put('userName', $userName);
                 return view("messageboard", compact('userName', 'posts'));
+            }
         }
         return view("login", ['message' => "login Failed : username and password does not match"]);
     }
 
-    public function postLogin()
+    public function postLogin(LoginRequest $request)
     {
-        $userName = Input::get('username');
-        $password = Input::get('password');
+        $postid = $request->session()->get('postId');
+        $userName = $request->username;
+        $password = $request->password;
         $user = new User();
         $users = $user->get();
-
-        $post = Post::find(1);
-        $comments = Comments::get();
+        $post = Post::find($postid);
+        $comments = $post->find($postid)->comments;
         foreach ($users as $u) {
-            if ($userName == $u->email && $password == $u->password)
+            if ($userName == $u->email && $password == $u->password) {
+                $request->session()->put('userName', $userName);
                 return view("post", compact('post', 'comments', 'userName'));
+            }
         }
         return view("login", ['message' => "login Failed"]);
     }

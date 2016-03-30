@@ -30,8 +30,9 @@ class RegisterController extends Controller
             $message = "passwords not matched";
             return view("register", compact('message'));
         } else {
-            //$user->save();
+            $user->save();
             $userName = $user->email;
+            $request->session()->put('userName', $userName);
             return view("messageboard", compact('userName', 'posts'));
         }
     }

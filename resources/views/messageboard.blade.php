@@ -39,14 +39,8 @@
         @foreach($posts as $post)
 
             <tr>
-                @if($userName!="")
-                    <td><a href="post/{{$post->id}}/{{$userName}}">{{$post->post_title}}</a></td>
-                @endif
-                @if($userName=="")
-                    <td><a href="post/{{$post->id}}">{{$post->post_title}}</a></td>
-                @endif
+                <td><a href="post/{{$post->id}}">{{$post->post_title}}</a></td>
                 <td>{{$post->User['email']}}</td>
-                </td>
                 <td>{{\App\Comments::where('post_id',$post->id)->count()}}</td>
                 <td>{{$post->created_at}}</td>
             </tr>
@@ -73,7 +67,6 @@
                     <td></td>
                 </tr>
             </table>
-            <input type="hidden" value="{{$userName}}" name="userName">
         </form>
     </div>
 @endif
