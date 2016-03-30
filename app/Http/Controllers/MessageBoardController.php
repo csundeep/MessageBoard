@@ -15,8 +15,7 @@ class MessageBoardController extends Controller
     {
         $post = new Post();
         $posts = $post->get();
-        $userName = "";
-        return view("messageboard", compact('userName', 'posts'));
+        return view("messageboard", compact('posts'));
     }
 
     public function postQuery(Request $request)
@@ -24,7 +23,7 @@ class MessageBoardController extends Controller
         $userName = $request->session()->get('userName');
         $title = $request->title;
         $description = $request->description;
-        $user = User::where('email',$userName)->first();
+        $user = User::where('email', $userName)->first();
         $newPost = new post();
         $newPost->post_title = $title;
         $newPost->description = $description;
@@ -32,21 +31,15 @@ class MessageBoardController extends Controller
         $newPost->save();
         $post = new Post();
         $posts = $post->get();
-        return view("messageboard", compact('userName', 'posts'));
+        return view("messageboard", compact('posts'));
     }
 
     public function showPost($id, Request $request)
     {
-        $userName = $request->session()->get('userName');
         $post = Post::find($id);
         $comments = Post::find($id)->comments;
-
-        foreach ($comments as $comment) {
-
-            //  echo User::find($comment->user_id)->email;
-        }
-        $request->session()->set('postId',$id);
-        return view("post", compact('post', 'comments', 'userName'));
+        $request->session()->set('postId', $id);
+        return view("post", compact('post', 'comments'));
     }
 
     public function postComment($comment, Request $request)
@@ -54,12 +47,13 @@ class MessageBoardController extends Controller
         $postId = $request->session()->get('postId');
         $userName = $request->session()->get('userName');
         $responseString = "<table>";
-        $newComment = new Comments();
-        $newComment->comment = $comment;
-        $newComment->post_id = $postId;
-        $newComment->user_id = User::where('email', $userName)->first()->id;
-        $newComment->save();
-
+        if ($comment != null || $comment != "") {
+            $newComment = new Comments();
+            $newComment->comment = $comment;
+            $newComment->post_id = $postId;
+            $newComment->user_id = User::where('email', $userName)->first()->id;
+            $newComment->save();
+        }
         $comments = Post::find($postId)->comments;
         foreach ($comments as $comment) {
             $responseString = $responseString . "<tr>

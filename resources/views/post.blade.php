@@ -5,7 +5,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
     <script>
         $(document).ready(function () {
-            @if($userName=="")
+            @if(Session::get('userName')=="")
             $("#newComment").val('please login to comment');
             $("#newComment").prop('disabled', true);
             @endif
@@ -27,14 +27,14 @@
 <body>
 
 <div>
-    <p>Welcome to message board {{$userName}}</p>
+    <p>Welcome to message board {{Session::get('userName')}}</p>
 
-    @if($userName=="")
+    @if(Session::get('userName')=="")
         <a href="login">login</a>
         <a href="register">create a new profile</a>
     @endif
 
-    @if($userName!="")
+    @if(Session::get('userName')!="")
         <a href="logout">logout</a>
     @endif
 </div>

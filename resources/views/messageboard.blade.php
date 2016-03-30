@@ -15,14 +15,14 @@
 <body>
 
 <div>
-    <p>Welcome to message board {{$userName}}</p>
+    <p>Welcome to message board {{Session::get('userName')}}</p>
 
-    @if($userName=="")
+    @if(Session::get('userName')=="")
         <a href="login">login</a>
         <a href="register">create a new profile</a>
     @endif
 
-    @if($userName!="")
+    @if(Session::get('userName')!="")
         <a href="logout">logout</a>
     @endif
 </div>
@@ -48,7 +48,7 @@
     </table>
 </div>
 <br/>
-@if($userName!="")
+@if(Session::get('userName')!="")
     <input type="button" id="PostQuery" value="Post Your Query">
 
     <div id="query">

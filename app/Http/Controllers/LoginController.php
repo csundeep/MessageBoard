@@ -34,7 +34,7 @@ class LoginController extends Controller
         foreach ($users as $u) {
             if ($userName == $u->email && $password == $u->password) {
                 $request->session()->put('userName', $userName);
-                return view("messageboard", compact('userName', 'posts'));
+                return view("messageboard", compact('posts'));
             }
         }
         return view("login", ['message' => "login Failed : username and password does not match"]);
@@ -52,7 +52,7 @@ class LoginController extends Controller
         foreach ($users as $u) {
             if ($userName == $u->email && $password == $u->password) {
                 $request->session()->put('userName', $userName);
-                return view("post", compact('post', 'comments', 'userName'));
+                return view("post", compact('post', 'comments'));
             }
         }
         return view("login", ['message' => "login Failed"]);
