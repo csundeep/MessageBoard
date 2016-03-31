@@ -14,8 +14,8 @@ class Post extends Migration
     {
         Schema::create('posts', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('post_title',320);
-            $table->string('description',2024);
+            $table->string('post_title',1024);
+            $table->string('description',9069);
             $table->integer('user_id');
             $table->timestamps();
         });

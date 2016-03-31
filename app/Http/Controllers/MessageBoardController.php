@@ -44,6 +44,7 @@ class MessageBoardController extends Controller
 
     public function postComment($comment, Request $request)
     {
+     
         $postId = $request->session()->get('postId');
         $userName = $request->session()->get('userName');
         $responseString = "<table>";
@@ -54,11 +55,13 @@ class MessageBoardController extends Controller
             $newComment->user_id = User::where('email', $userName)->first()->id;
             $newComment->save();
         }
+
         $comments = Post::find($postId)->comments;
         foreach ($comments as $comment) {
             $responseString = $responseString . "<tr>
-                <td><textarea>" . $comment->comment . "</textarea> Commented by " . User::find($comment->user_id)->email . "
-            Commented date " . $comment->created_at . "</td></tr>";
+                <td><p>" . $comment->comment . "</p> <span id=\"commentedBy\"> by " . User::find($comment->user_id)->email . "
+                                at " . $comment->created_at . "</span>
+                            </td></tr>";
         }
         $responseString = $responseString . "</table>";
 
